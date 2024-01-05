@@ -24,7 +24,6 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
       bird = Bird(),
       score = buildScore(),
     ]);
-
     interval.onTick = () => add(PipeGroup());
   }
 

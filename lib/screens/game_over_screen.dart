@@ -1,12 +1,14 @@
 import 'package:flappy_bird/game/assets.dart';
 import 'package:flappy_bird/game/flappy_bird_game.dart';
+import 'package:flappy_bird/game/highscore_manager.dart';
 import 'package:flutter/material.dart';
 
 class GameOverScreen extends StatelessWidget {
   final FlappyBirdGame game;
   static const String id = 'gameOver';
+  final HighscoreManager _highscoreManager = HighscoreManager();
 
-  const GameOverScreen({super.key, required this.game});
+  GameOverScreen({super.key, required this.game});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +18,26 @@ class GameOverScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            FutureBuilder<int>(
+              future: _highscoreManager.getHighscore(),
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return Text(
+                    'Highscore: ${snapshot.data}',
+                    style: const TextStyle(
+                      fontSize: 60,
+                      color: Colors.white,
+                      fontFamily: 'Game',
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(
+              height: 40,
+            ),
             Text(
               'Score: ${game.bird.score}',
               style: const TextStyle(

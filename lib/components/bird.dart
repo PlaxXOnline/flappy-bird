@@ -6,6 +6,7 @@ import 'package:flappy_bird/game/assets.dart';
 import 'package:flappy_bird/game/bird_movement.dart';
 import 'package:flappy_bird/game/configuration.dart';
 import 'package:flappy_bird/game/flappy_bird_game.dart';
+import 'package:flappy_bird/game/highscore_manager.dart';
 import 'package:flutter/material.dart';
 
 class Bird extends SpriteGroupComponent<BirdMovement>
@@ -13,6 +14,7 @@ class Bird extends SpriteGroupComponent<BirdMovement>
   Bird();
 
   int score = 0;
+  final HighscoreManager _highscoreManager = HighscoreManager();
 
   @override
   Future<void> onLoad() async {
@@ -58,17 +60,24 @@ class Bird extends SpriteGroupComponent<BirdMovement>
     score = 0;
   }
 
-  void gameOver() {
+  void gameOver() async {
     FlameAudio.play(Assets.collision);
+
     gameRef.overlays.add('gameOver');
     gameRef.pauseEngine();
     game.isHit = true;
+
+    int highscore = await _highscoreManager.getHighscore();
+    if (score > highscore) {
+      _highscoreManager.setHighscore(score);
+    }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
     position.y += Config.birdVelocity * dt;
+
     if (position.y < 1) {
       gameOver();
     }
