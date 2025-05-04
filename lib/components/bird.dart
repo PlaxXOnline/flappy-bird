@@ -16,6 +16,10 @@ class Bird extends SpriteGroupComponent<BirdMovement>
   int score = 0;
   final HighscoreManager _highscoreManager = HighscoreManager();
 
+  /// Loads all necessary sprites and initializes the bird component.
+  /// 
+  /// This method is called automatically when the component is added to the game.
+  /// It loads the bird's sprites, sets its size and position, and adds a collision hitbox.
   @override
   Future<void> onLoad() async {
     final birdMidFlap = await gameRef.loadSprite(Assets.birdMidFlap);
@@ -24,12 +28,16 @@ class Bird extends SpriteGroupComponent<BirdMovement>
 
     size = Vector2(50, 40);
     position = Vector2(50, gameRef.size.y / 2 - size.y / 2);
-    current = BirdMovement.middle;
+    
+    // Initialize sprites map before setting current sprite
     sprites = {
       BirdMovement.middle: birdMidFlap,
       BirdMovement.up: birdUpFlap,
       BirdMovement.down: birdDownFlap,
     };
+    
+    // Set current sprite after sprites have been initialized
+    current = BirdMovement.middle;
 
     add(CircleHitbox());
   }
